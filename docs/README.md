@@ -1,3 +1,13 @@
-This directory is for Markdown documentation.
+<!-- 
+Use this file to provide a index to the documents.
 
-Please start filenames with "#.# " for correct documentation build.
+See https://github.com/AMWA-TV/nmos-template/docs/README.md for an example of the syntax
+-->
+
+### Introduction
+
+- [Overview](Overview.md)
+
+### Miscellaneous
+
+- [Further Reading](Further%20Reading.md)
