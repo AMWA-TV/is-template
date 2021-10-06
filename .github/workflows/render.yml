@@ -17,7 +17,7 @@ jobs:
     name: Build
     steps:
       - name: Use NMOS Render
-        uses: docker://peterbrightwell/nmos-render:latest
+        uses: docker://amwa/nmos-render:latest
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
