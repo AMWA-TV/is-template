@@ -15,9 +15,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
+    container:
+      image: amwa/nmos-render:latest
     steps:
-      - name: Use NMOS Render
-        uses: docker://amwa/nmos-render:latest
+      - name: Setup
+        run: make -C .render distclean build-tools
+      - name: Build site
+        run: make -C .render build
+      - name: Upload site
+        run: make -C .render upload
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
