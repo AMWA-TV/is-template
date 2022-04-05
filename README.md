@@ -15,6 +15,7 @@ This repository holds the source for this Specification, part of the family of [
 
 - It helps ensure consistency between NMOS Specifications.
 - It helps us test our continuous integration.
+- It just does
 
 ### How does it work?
 
