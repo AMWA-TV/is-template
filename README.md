@@ -5,6 +5,8 @@
 
 This repository holds the source for this Specification, part of the family of [Networked Media Open Specifications](https://specs.amwa.tv/nmos) from the [Advanced Media Workflow Association](https://amwa.tv)
 
+Here is a [broken link](BROKEN)
+
 <!-- INTRO-START -->
 
 ### What does it do?
