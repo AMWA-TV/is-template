@@ -8,3 +8,6 @@ repo_url: https://github.com/AMWA-TV/is-template
 releases:
 default_branch: main
 show_in_index: false
+labels:
+- is
+- template
