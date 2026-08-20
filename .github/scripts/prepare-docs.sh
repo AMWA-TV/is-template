@@ -28,8 +28,12 @@ for directory in APIs examples; do
 done
 
 # docs/README.md is a legacy Jekyll navigation source, not a documentation
-# page. The explicit navigation in zensical.toml replaces it.
+# page. The generated index pages and Zensical's implicit navigation replace it.
 rm -f docs/README.md
+
+# Render discovered RAML, schema, and example assets and generate their index
+# pages. This must happen after root-level assets have been staged into docs/.
+python3 .github/scripts/render-doc-assets.py
 
 # Generate the documentation landing page from README.md. A docs/ directory
 # link in README points to the documentation currently being viewed.

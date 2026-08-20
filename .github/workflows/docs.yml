@@ -73,6 +73,16 @@ jobs:
           python -m pip install zensical
           python -m pip install git+https://github.com/squidfunk/mike.git
 
+      - name: Set up Node.js for RAML rendering
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install RAML renderer
+        run: |
+          npm install --prefix "${RUNNER_TEMP}/raml2html" raml2html
+          echo "RAML2HTML_BIN=${RUNNER_TEMP}/raml2html/node_modules/.bin/raml2html" >> "$GITHUB_ENV"
+
       - name: Prepare docs tree for site build
         run: ./.github/scripts/prepare-docs.sh
 

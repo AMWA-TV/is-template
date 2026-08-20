@@ -9,3 +9,5 @@ docs/index.md
 
 # Local Zensical rendering output
 .render-zensical/
+__pycache__/
+*.pyc
