@@ -121,6 +121,23 @@ jobs:
           RewriteEngine On
           RewriteRule ^$ latest/ [R=302,L]
           EOF
+          # Static fallback for servers where AllowOverride/RewriteEngine is
+          # disabled. This also handles the directory URL after its trailing
+          # slash has been normalized by the web server.
+          cat > site/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=latest/">
+            <link rel="canonical" href="latest/">
+            <title>Redirecting to the latest documentation</title>
+          </head>
+          <body>
+            <p><a href="latest/">Go to the latest documentation</a></p>
+          </body>
+          </html>
+          EOF
 
       - name: Upload versioned site to AMWA web server
         env:
