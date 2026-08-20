@@ -25,12 +25,15 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      # The gh-pages branch is Mike's incremental version store. The rendered
+      # result is uploaded to the AMWA server rather than served by Pages.
+      SPEC_SERVER: specs.amwa.tv
+      SITE_NAME: is-template
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -107,3 +110,18 @@ jobs:
           elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             mike deploy --push "${BUILD_REF}"
           fi
+
+      - name: Export the updated Mike site
+        run: |
+          rm -rf site
+          mkdir site
+          git fetch origin gh-pages --depth=1
+          git archive origin/gh-pages | tar -x -C site
+
+      - name: Upload versioned site to AMWA web server
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: ./.github/scripts/upload-site.sh
