@@ -18,6 +18,19 @@ if [[ ! -f README.md ]]; then
     exit 1
 fi
 
+# Zensical builds from docs/, while these optional source directories live at
+# repository root. Stage them into the temporary docs tree for the site build.
+for directory in APIs examples; do
+    if [[ -d "${directory}" ]]; then
+        rm -rf "docs/${directory}"
+        cp -R "${directory}" "docs/${directory}"
+    fi
+done
+
+# docs/README.md is a legacy Jekyll navigation source, not a documentation
+# page. The explicit navigation in zensical.toml replaces it.
+rm -f docs/README.md
+
 # Generate the documentation landing page from README.md. A docs/ directory
 # link in README points to the documentation currently being viewed.
 sed -E \
@@ -27,8 +40,6 @@ sed -E \
     -e "s#\]\(LICENSE(\.txt|\.md)?\)#](${REPO_URL}/LICENSE\1)#g" \
     -e "s#\]\(CONTRIBUTING\.md\)#](${REPO_URL}/CONTRIBUTING.md)#g" \
     -e "s#\]\(SECURITY\.md\)#](${REPO_URL}/SECURITY.md)#g" \
-    -e "s#\]\((APIs|examples)/([^)]+)\)#](${REPO_URL}/\1/\2)#g" \
-    -e "s#\]\((APIs|examples)/\)#](${REPO_URL}/\1/)#g" \
     -e "s#https://github.com/${REPO_SLUG}/blob/[0-9a-f]+/docs/([^)\" ]+)#\1#g" \
     README.md > docs/index.md
 
@@ -40,7 +51,9 @@ shopt -s nullglob
 for file in docs/*.md; do
     [[ "${file}" == "docs/index.md" ]] && continue
     sed -i -E \
+        -e 's#\]\(\.\./(APIs|examples)/#](__KEEP_\1/#g' \
         -e "s#\]\(\.\./([^)]+)\)#](${REPO_URL}/\1)#g" \
+        -e 's#\]\(__KEEP_(APIs|examples)/#](../\1/#g' \
         -e "/^\{:\.no_toc\}/,/^[[:space:]]*\{:toc\}/d" \
         "${file}"
 done
