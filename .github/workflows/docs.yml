@@ -34,6 +34,7 @@ jobs:
       # result is uploaded to the AMWA server rather than served by Pages.
       SPEC_SERVER: specs.amwa.tv
       SITE_NAME: is-template
+      PUBLIC_DOCS_ROOT: https://specs.amwa.tv/new/is-template
     steps:
       - name: Check out repository
         uses: actions/checkout@v5

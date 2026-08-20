@@ -12,6 +12,8 @@ set -euo pipefail
 REPO_SLUG="${GITHUB_REPOSITORY:-AMWA-TV/is-template}"
 REF="${BUILD_REF:-${GITHUB_REF_NAME:-main}}"
 REPO_URL="https://github.com/${REPO_SLUG}/blob/${REF}"
+PUBLIC_DOCS_ROOT="${PUBLIC_DOCS_ROOT:-https://specs.amwa.tv/${REPO_SLUG##*/}}"
+DOCS_URL="${DOCS_URL:-${PUBLIC_DOCS_ROOT%/}/${REF}}"
 
 if [[ ! -f README.md ]]; then
     echo "error: README.md not found (run from repo root)" >&2
@@ -44,6 +46,8 @@ sed -E \
     -e "s#\]\(LICENSE(\.txt|\.md)?\)#](${REPO_URL}/LICENSE\1)#g" \
     -e "s#\]\(CONTRIBUTING\.md\)#](${REPO_URL}/CONTRIBUTING.md)#g" \
     -e "s#\]\(SECURITY\.md\)#](${REPO_URL}/SECURITY.md)#g" \
+    -e "s#\]\((APIs|examples)/([^)]+)\)#](${DOCS_URL}/\1/\2)#g" \
+    -e "s#\]\((APIs|examples)/\)#](${DOCS_URL}/\1/)#g" \
     -e "s#https://github.com/${REPO_SLUG}/blob/[0-9a-f]+/docs/([^)\" ]+)#\1#g" \
     README.md > docs/index.md
 
@@ -55,9 +59,9 @@ shopt -s nullglob
 for file in docs/*.md; do
     [[ "${file}" == "docs/index.md" ]] && continue
     sed -i -E \
-        -e 's#\]\(\.\./(APIs|examples)/#](__KEEP_\1/#g' \
+        -e "s#\]\(\.\./(APIs|examples)/([^)]+)\)#](${DOCS_URL}/\1/\2)#g" \
+        -e "s#\]\(\.\./(APIs|examples)/\)#](${DOCS_URL}/\1/)#g" \
         -e "s#\]\(\.\./([^)]+)\)#](${REPO_URL}/\1)#g" \
-        -e 's#\]\(__KEEP_(APIs|examples)/#](../\1/#g' \
         -e "/^\{:\.no_toc\}/,/^[[:space:]]*\{:toc\}/d" \
         "${file}"
 done
