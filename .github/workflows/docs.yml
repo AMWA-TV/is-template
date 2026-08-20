@@ -1,0 +1,109 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - 'v[1-9]*.[0-9]*-dev'
+      - 'v[1-9]*.[0-9]*.x'
+      - 'publish-*'
+    tags:
+      - 'v[1-9]*.[0-9]*.[0-9]*'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: >-
+          Optional branch or tag to build docs from. Leave empty to build the
+          ref this workflow runs on. Use this to (re)build docs for historical
+          tags whose own copy of this workflow predates workflow_dispatch.
+        required: false
+        default: ''
+      alias_latest:
+        description: Also publish this build under the 'latest' alias
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Overlay docs sources from selected ref
+        if: ${{ inputs.ref != '' }}
+        env:
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          git checkout "${INPUT_REF}" -- docs/ README.md
+
+      - name: Determine build ref
+        env:
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          if [[ -n "${INPUT_REF}" ]]; then
+            BUILD_REF="${INPUT_REF}"
+          else
+            BUILD_REF="${GITHUB_REF_NAME}"
+          fi
+          echo "BUILD_REF=${BUILD_REF}" >> "$GITHUB_ENV"
+          echo "Building docs as version: ${BUILD_REF}"
+
+      - name: Fetch gh-pages branch
+        run: git fetch origin gh-pages --depth=1 || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install Zensical and Mike
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install zensical
+          python -m pip install git+https://github.com/squidfunk/mike.git
+
+      - name: Prepare docs tree for site build
+        run: ./.github/scripts/prepare-docs.sh
+
+      - name: Build documentation
+        run: zensical build --clean
+
+      - name: Install lychee
+        run: sudo snap install lychee
+
+      - name: Check for broken links
+        continue-on-error: true
+        run: >-
+          lychee --root-dir ./site --verbose --no-progress
+          --accept '100..=103,200..=299,403'
+          --accept-timeouts './site/**/*.html'
+
+      - name: Configure git for Mike
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Deploy documentation with Mike
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALIAS_LATEST: ${{ inputs.alias_latest }}
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ "${ALIAS_LATEST}" == "true" ]]; then
+              mike deploy --push --update-aliases "${BUILD_REF}" latest
+            else
+              mike deploy --push "${BUILD_REF}"
+            fi
+          elif [[ "${GITHUB_REF_TYPE}" == "branch" ]]; then
+            mike deploy --push --update-aliases "${BUILD_REF}" latest
+          elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            mike deploy --push "${BUILD_REF}"
+          fi
