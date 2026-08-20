@@ -1,7 +1,11 @@
 # \[Work In Progress\] AMWA NMOS Template Specification
 
-[![Lint Status](https://github.com/AMWA-TV/is-template/workflows/Lint/badge.svg)](https://github.com/AMWA-TV/is-template/actions?query=workflow%3ALint)
-[![Render Status](https://github.com/AMWA-TV/is-template/workflows/Render/badge.svg)](https://github.com/AMWA-TV/is-template/actions?query=workflow%3ARender)
+[![Lint Status](https://github.com/AMWA-TV/is-template/actions/workflows/lint.yml/badge.svg)](https://github.com/AMWA-TV/is-template/actions/workflows/lint.yml)
+[![Render Status](https://github.com/AMWA-TV/is-template/actions/workflows/docs.yml/badge.svg)](https://github.com/AMWA-TV/is-template/actions/workflows/docs.yml)
+[![License](https://img.shields.io/github/license/AMWA-TV/is-template)](https://github.com/AMWA-TV/is-template/blob/main/LICENSE)
+[![Issues](https://img.shields.io/github/issues/AMWA-TV/is-template)](https://github.com/AMWA-TV/is-template/issues)
+
+[GitHub repository](https://github.com/AMWA-TV/is-template)
 
 This repository holds the source for this Specification, part of the family of [Networked Media Open Specifications](https://specs.amwa.tv/nmos) from the [Advanced Media Workflow Association](https://amwa.tv)
 

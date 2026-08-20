@@ -117,6 +117,10 @@ jobs:
           mkdir site
           git fetch origin gh-pages --depth=1
           git archive origin/gh-pages | tar -x -C site
+          cat > site/.htaccess <<'EOF'
+          RewriteEngine On
+          RewriteRule ^$ latest/ [R=302,L]
+          EOF
 
       - name: Upload versioned site to AMWA web server
         env:
