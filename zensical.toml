@@ -4,6 +4,16 @@ site_description = "Template for AMWA NMOS Interface Specifications"
 site_url = "https://specs.amwa.tv/is-template/"
 repo_name = "AMWA-TV/is-template"
 repo_url = "https://github.com/AMWA-TV/is-template"
+nav = [
+  { "Home" = "index.md" },
+  { "Documentation" = [
+    "Overview.md",
+    "Style Guide.md",
+    "Further Info.md",
+  ] },
+  { "APIs" = "APIs/README.md" },
+  { "Examples" = "examples/README.md" },
+]
 
 [project.extra.version]
 provider = "mike"

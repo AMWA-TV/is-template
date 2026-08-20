@@ -117,13 +117,8 @@ jobs:
           mkdir site
           git fetch origin gh-pages --depth=1
           git archive origin/gh-pages | tar -x -C site
-          cat > site/.htaccess <<'EOF'
-          RewriteEngine On
-          RewriteRule ^$ latest/ [R=302,L]
-          EOF
-          # Static fallback for servers where AllowOverride/RewriteEngine is
-          # disabled. This also handles the directory URL after its trailing
-          # slash has been normalized by the web server.
+          # Static redirect; deliberately avoid .htaccess because the AMWA
+          # server has other directory-level Apache rules.
           cat > site/index.html <<'EOF'
           <!doctype html>
           <html lang="en">
