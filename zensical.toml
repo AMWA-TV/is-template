@@ -5,5 +5,8 @@ site_url = "https://specs.amwa.tv/is-template/"
 repo_name = "AMWA-TV/is-template"
 repo_url = "https://github.com/AMWA-TV/is-template"
 
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
 [project.extra.version]
 provider = "mike"

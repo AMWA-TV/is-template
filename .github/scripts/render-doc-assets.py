@@ -12,6 +12,7 @@ import json
 import os
 import shutil
 import subprocess
+import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -82,23 +83,22 @@ def render_schemas() -> None:
         resolved_value = resolve_reference(raw_value, source)
 
         raw_entries.append((relative.with_suffix(".md").as_posix(), relative.stem))
-        write(
-            raw_md,
-            f"# Schema: {relative.name}\n\n"
-            f"[Raw file]({relative.name}) · "
-            f"[Show resolved ($refs inlined)](resolved/{relative.stem}.md)\n\n"
-            + json_fence(raw_value),
-        )
         resolved_json = resolved_dir / relative
-        resolved_md = resolved_json.with_suffix(".md")
         resolved_json.parent.mkdir(parents=True, exist_ok=True)
         resolved_json.write_text(json.dumps(resolved_value, indent=2) + "\n", encoding="utf-8")
+        raw_link = Path(os.path.relpath(raw_json, raw_md.parent)).as_posix()
+        resolved_link = Path(os.path.relpath(resolved_json, raw_md.parent)).as_posix()
+        raw_tab = textwrap.indent(json_fence(raw_value).rstrip(), "    ")
+        resolved_tab = textwrap.indent(json_fence(resolved_value).rstrip(), "    ")
         write(
-            resolved_md,
-            f"# Schema (resolved): {relative.name}\n\n"
-            f"[Raw file](../{relative.name}) · "
-            f"[Show original (with $refs)](../{relative.stem}.md)\n\n"
-            + json_fence(resolved_value),
+            raw_md,
+            f"# {relative.stem}\n\n"
+            "=== \"With refs\"\n\n"
+            f"    [Raw file]({raw_link})\n\n"
+            f"{raw_tab}\n\n"
+            "=== \"Resolved\"\n\n"
+            f"    [Resolved JSON file]({resolved_link})\n\n"
+            f"{resolved_tab}\n",
         )
 
     lines = ["# JSON Schemas", ""]
@@ -106,10 +106,6 @@ def render_schemas() -> None:
         lines.append(f"- [{title}]({relative})")
     write(SCHEMA_DOCS / "index.md", "\n".join(lines) + "\n")
 
-    resolved_lines = ["# Resolved JSON Schemas", ""]
-    for relative, title in raw_entries:
-        resolved_lines.append(f"- [{title}](resolved/{Path(relative).name})")
-    write(resolved_dir / "index.md", "\n".join(resolved_lines) + "\n")
 
 
 def render_examples() -> None:
