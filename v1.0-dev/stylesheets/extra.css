@@ -1,0 +1,45 @@
+.json-viewer {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  border-radius: 0.2rem;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+  font-family: var(--md-code-font-family, monospace);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.json-node > summary {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.json-node[open] > summary .json-fold {
+  display: none;
+}
+
+.headerlink {
+  display: none !important;
+}
+
+.json-node > summary:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.json-children {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.json-line,
+.json-close {
+  white-space: pre-wrap;
+}
+
+.json-key { color: var(--md-code-hl-function-color); }
+.json-string { color: var(--md-code-hl-string-color); }
+.json-number { color: var(--md-code-hl-number-color); }
+.json-boolean, .json-null { color: var(--md-code-hl-constant-color); }
+.json-fold, .json-comma { opacity: 0.65; }

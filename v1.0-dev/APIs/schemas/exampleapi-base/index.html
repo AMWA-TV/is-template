@@ -53,6 +53,8 @@
       
     
     
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
     <script>__md_scope=new URL("../../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
     
       
@@ -790,52 +792,98 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><a href="../exampleapi-base.json">Raw file</a></p>
-<p><code>json
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "description": "Describes the Example API base resource",
-  "title": "Example API base resource",
-  "required": [
-    "id"
-  ],
-  "properties": {
-    "id": {
-      "$ref": "id-uuid.json"
-    }
-  }
-}</code></p>
+<p><div class="json-viewer">
+<details class="json-node" open>
+  <summary>{ <span class="json-fold">…</span> }</summary>
+  <div class="json-children">
+    <div class="json-line"><span class="json-key">&quot;$schema&quot;</span>: <span class="json-string">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;type&quot;</span>: <span class="json-string">&quot;object&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;description&quot;</span>: <span class="json-string">&quot;Describes the Example API base resource&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;title&quot;</span>: <span class="json-string">&quot;Example API base resource&quot;</span><span class="json-comma">,</span></div>
+    <details class="json-node">
+      <summary><span class="json-key">&quot;required&quot;</span>: [ <span class="json-fold">…</span> ]</summary>
+      <div class="json-children">
+        <div class="json-line"><span class="json-string">&quot;id&quot;</span></div>
+      </div>
+      <div class="json-close">]<span class="json-comma">,</span></div>
+    </details>
+    <details class="json-node">
+      <summary><span class="json-key">&quot;properties&quot;</span>: { <span class="json-fold">…</span> }</summary>
+      <div class="json-children">
+        <details class="json-node">
+          <summary><span class="json-key">&quot;id&quot;</span>: { <span class="json-fold">…</span> }</summary>
+          <div class="json-children">
+            <div class="json-line"><span class="json-key">&quot;$ref&quot;</span>: <span class="json-string">&quot;id-uuid.json&quot;</span></div>
+          </div>
+          <div class="json-close">}</div>
+        </details>
+      </div>
+      <div class="json-close">}</div>
+    </details>
+  </div>
+  <div class="json-close">}</div>
+</details>
+</div></p>
 </div>
 <div class="tabbed-block">
 <p><a href="../resolved/exampleapi-base.json">Resolved JSON file</a></p>
-<p><code>json
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "description": "Describes the Example API base resource",
-  "title": "Example API base resource",
-  "required": [
-    "id"
-  ],
-  "properties": {
-    "id": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "type": "object",
-      "description": "Describes an UUID id object",
-      "title": "UUID ID",
-      "required": [
-        "id"
-      ],
-      "properties": {
-        "id": {
-          "description": "UUID",
-          "type": "string",
-          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-        }
-      }
-    }
-  }
-}</code></p>
+<p><div class="json-viewer">
+<details class="json-node" open>
+  <summary>{ <span class="json-fold">…</span> }</summary>
+  <div class="json-children">
+    <div class="json-line"><span class="json-key">&quot;$schema&quot;</span>: <span class="json-string">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;type&quot;</span>: <span class="json-string">&quot;object&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;description&quot;</span>: <span class="json-string">&quot;Describes the Example API base resource&quot;</span><span class="json-comma">,</span></div>
+    <div class="json-line"><span class="json-key">&quot;title&quot;</span>: <span class="json-string">&quot;Example API base resource&quot;</span><span class="json-comma">,</span></div>
+    <details class="json-node">
+      <summary><span class="json-key">&quot;required&quot;</span>: [ <span class="json-fold">…</span> ]</summary>
+      <div class="json-children">
+        <div class="json-line"><span class="json-string">&quot;id&quot;</span></div>
+      </div>
+      <div class="json-close">]<span class="json-comma">,</span></div>
+    </details>
+    <details class="json-node">
+      <summary><span class="json-key">&quot;properties&quot;</span>: { <span class="json-fold">…</span> }</summary>
+      <div class="json-children">
+        <details class="json-node">
+          <summary><span class="json-key">&quot;id&quot;</span>: { <span class="json-fold">…</span> }</summary>
+          <div class="json-children">
+            <div class="json-line"><span class="json-key">&quot;$schema&quot;</span>: <span class="json-string">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span class="json-comma">,</span></div>
+            <div class="json-line"><span class="json-key">&quot;type&quot;</span>: <span class="json-string">&quot;object&quot;</span><span class="json-comma">,</span></div>
+            <div class="json-line"><span class="json-key">&quot;description&quot;</span>: <span class="json-string">&quot;Describes an UUID id object&quot;</span><span class="json-comma">,</span></div>
+            <div class="json-line"><span class="json-key">&quot;title&quot;</span>: <span class="json-string">&quot;UUID ID&quot;</span><span class="json-comma">,</span></div>
+            <details class="json-node">
+              <summary><span class="json-key">&quot;required&quot;</span>: [ <span class="json-fold">…</span> ]</summary>
+              <div class="json-children">
+                <div class="json-line"><span class="json-string">&quot;id&quot;</span></div>
+              </div>
+              <div class="json-close">]<span class="json-comma">,</span></div>
+            </details>
+            <details class="json-node">
+              <summary><span class="json-key">&quot;properties&quot;</span>: { <span class="json-fold">…</span> }</summary>
+              <div class="json-children">
+                <details class="json-node">
+                  <summary><span class="json-key">&quot;id&quot;</span>: { <span class="json-fold">…</span> }</summary>
+                  <div class="json-children">
+                    <div class="json-line"><span class="json-key">&quot;description&quot;</span>: <span class="json-string">&quot;UUID&quot;</span><span class="json-comma">,</span></div>
+                    <div class="json-line"><span class="json-key">&quot;type&quot;</span>: <span class="json-string">&quot;string&quot;</span><span class="json-comma">,</span></div>
+                    <div class="json-line"><span class="json-key">&quot;pattern&quot;</span>: <span class="json-string">&quot;^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$&quot;</span></div>
+                  </div>
+                  <div class="json-close">}</div>
+                </details>
+              </div>
+              <div class="json-close">}</div>
+            </details>
+          </div>
+          <div class="json-close">}</div>
+        </details>
+      </div>
+      <div class="json-close">}</div>
+    </details>
+  </div>
+  <div class="json-close">}</div>
+</details>
+</div></p>
 </div>
 </div>
 </div>
