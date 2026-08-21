@@ -11,14 +11,11 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: >-
-          Optional branch or tag to build docs from. Leave empty to build the
-          ref this workflow runs on. Use this to (re)build docs for historical
-          tags whose own copy of this workflow predates workflow_dispatch.
+        description: Optional branch or tag to rebuild
         required: false
         default: ''
       alias_latest:
-        description: Also publish this build under the 'latest' alias
+        description: Also publish this build under the latest alias
         required: false
         type: boolean
         default: false
@@ -27,132 +24,14 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    env:
-      # The gh-pages branch is Mike's incremental version store. The rendered
-      # result is uploaded to the AMWA server rather than served by Pages.
-      SPEC_SERVER: specs.amwa.tv
-      SITE_NAME: is-template
-      PUBLIC_DOCS_ROOT: https://specs.amwa.tv/new/is-template
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Overlay docs sources from selected ref
-        if: ${{ inputs.ref != '' }}
-        env:
-          INPUT_REF: ${{ inputs.ref }}
-        run: |
-          git checkout "${INPUT_REF}" -- docs/ README.md
-
-      - name: Determine build ref
-        env:
-          INPUT_REF: ${{ inputs.ref }}
-        run: |
-          if [[ -n "${INPUT_REF}" ]]; then
-            BUILD_REF="${INPUT_REF}"
-          else
-            BUILD_REF="${GITHUB_REF_NAME}"
-          fi
-          echo "BUILD_REF=${BUILD_REF}" >> "$GITHUB_ENV"
-          echo "Building docs as version: ${BUILD_REF}"
-
-      - name: Fetch gh-pages branch
-        run: git fetch origin gh-pages --depth=1 || true
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.x'
-
-      - name: Install Zensical and Mike
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install zensical
-          python -m pip install git+https://github.com/squidfunk/mike.git
-
-      - name: Set up Node.js for RAML rendering
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-
-      - name: Install RAML renderer
-        run: |
-          npm install --prefix "${RUNNER_TEMP}/raml2html" raml2html
-          echo "RAML2HTML_BIN=${RUNNER_TEMP}/raml2html/node_modules/.bin/raml2html" >> "$GITHUB_ENV"
-
-      - name: Prepare docs tree for site build
-        run: ./.github/scripts/prepare-docs.sh
-
-      - name: Build documentation
-        run: zensical build --clean
-
-      - name: Install lychee
-        run: sudo snap install lychee
-
-      - name: Check for broken links
-        continue-on-error: true
-        # The site is checked before Mike places it below this staging prefix,
-        # so root-relative canonical/assets links are not local files yet.
-        # Relative documentation links are still checked normally.
-        run: >-
-          lychee --root-dir ./site --verbose --no-progress
-          --accept '100..=103,200..=299,403'
-          --accept-timeouts './site/**/*.html'
-          --exclude 'new/is-template'
-
-      - name: Configure git for Mike
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Deploy documentation with Mike
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ALIAS_LATEST: ${{ inputs.alias_latest }}
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            if [[ "${ALIAS_LATEST}" == "true" ]]; then
-              mike deploy --push --update-aliases "${BUILD_REF}" latest
-            else
-              mike deploy --push "${BUILD_REF}"
-            fi
-          elif [[ "${GITHUB_REF_TYPE}" == "branch" ]]; then
-            mike deploy --push --update-aliases "${BUILD_REF}" latest
-          elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            mike deploy --push "${BUILD_REF}"
-          fi
-
-      - name: Export the updated Mike site
-        run: |
-          rm -rf site
-          mkdir site
-          git fetch origin gh-pages --depth=1
-          git archive origin/gh-pages | tar -x -C site
-          # Static redirect; deliberately avoid .htaccess because the AMWA
-          # server has other directory-level Apache rules.
-          cat > site/index.html <<'EOF'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta http-equiv="refresh" content="0; url=latest/">
-            <link rel="canonical" href="latest/">
-            <title>Redirecting to the latest documentation</title>
-          </head>
-          <body>
-            <p><a href="latest/">Go to the latest documentation</a></p>
-          </body>
-          </html>
-          EOF
-
-      - name: Upload versioned site to AMWA web server
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        run: ./.github/scripts/upload-site.sh
+  docs:
+    uses: AMWA-TV/amwa-spec-docs/.github/workflows/docs.yml@main
+    with:
+      versioned: true
+      site-name: is-template
+      public-docs-root: https://specs.amwa.tv/new/is-template
+      source-ref: ${{ inputs.ref }}
+      alias-latest: ${{ inputs.alias_latest }}
+      # Pin this to a released toolkit tag or commit SHA once available.
+      toolkit-ref: main
+    secrets: inherit

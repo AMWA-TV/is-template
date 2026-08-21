@@ -1,4 +1,4 @@
-# AMWA NMOS Template Specification: Overview
+# Template for AMWA NMOS Interface Specifications: Overview
 {:.no_toc}
 
 * A markdown unordered list which will be replaced with the ToC, excluding the "Contents header" from above

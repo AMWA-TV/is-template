@@ -1,4 +1,4 @@
-# \[Work In Progress\] AMWA NMOS Template Specification
+# \[Work In Progress\] Template for AMWA NMOS Interface Specifications
 
 [![Lint Status](https://github.com/AMWA-TV/is-template/actions/workflows/lint.yml/badge.svg)](https://github.com/AMWA-TV/is-template/actions/workflows/lint.yml)
 [![Render Status](https://github.com/AMWA-TV/is-template/actions/workflows/docs.yml/badge.svg)](https://github.com/AMWA-TV/is-template/actions/workflows/docs.yml)
