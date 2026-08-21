@@ -107,11 +107,16 @@ def render_json_css() -> str:
 
 .json-node > summary {
   cursor: pointer;
+  padding-left: 0 !important;
   white-space: nowrap;
 }
 
-.json-node[open] > summary .json-fold {
-  display: none;
+.md-typeset .json-node > summary::before {
+  display: none !important;
+}
+
+.json-node[open] > summary > .json-fold {
+  display: none !important;
 }
 
 .headerlink {

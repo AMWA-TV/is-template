@@ -95,10 +95,14 @@ jobs:
 
       - name: Check for broken links
         continue-on-error: true
+        # The site is checked before Mike places it below this staging prefix,
+        # so root-relative canonical/assets links are not local files yet.
+        # Relative documentation links are still checked normally.
         run: >-
           lychee --root-dir ./site --verbose --no-progress
           --accept '100..=103,200..=299,403'
           --accept-timeouts './site/**/*.html'
+          --exclude 'new/is-template'
 
       - name: Configure git for Mike
         run: |

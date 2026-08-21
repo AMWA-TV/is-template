@@ -15,6 +15,27 @@ REPO_URL="https://github.com/${REPO_SLUG}/blob/${REF}"
 PUBLIC_DOCS_ROOT="${PUBLIC_DOCS_ROOT:-https://specs.amwa.tv/${REPO_SLUG##*/}}"
 DOCS_URL="${DOCS_URL:-${PUBLIC_DOCS_ROOT%/}/${REF}}"
 
+# Zensical uses site_url for canonical links. Keep it aligned with the
+# versioned location where this build will be uploaded, including /new/.
+python3 - "${PUBLIC_DOCS_ROOT%/}/" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+config = Path("zensical.toml")
+if config.is_file():
+    text = config.read_text(encoding="utf-8")
+    site_url = sys.argv[1]
+    updated = re.sub(
+        r"(?m)^site_url\s*=.*$",
+        f'site_url = "{site_url}"',
+        text,
+        count=1,
+    )
+    if updated != text:
+        config.write_text(updated, encoding="utf-8")
+PY
+
 if [[ ! -f README.md ]]; then
     echo "error: README.md not found (run from repo root)" >&2
     exit 1
@@ -46,8 +67,6 @@ sed -E \
     -e "s#\]\(LICENSE(\.txt|\.md)?\)#](${REPO_URL}/LICENSE\1)#g" \
     -e "s#\]\(CONTRIBUTING\.md\)#](${REPO_URL}/CONTRIBUTING.md)#g" \
     -e "s#\]\(SECURITY\.md\)#](${REPO_URL}/SECURITY.md)#g" \
-    -e "s#\]\((APIs|examples)/([^)]+)\)#](${DOCS_URL}/\1/\2)#g" \
-    -e "s#\]\((APIs|examples)/\)#](${DOCS_URL}/\1/)#g" \
     -e "s#https://github.com/${REPO_SLUG}/blob/[0-9a-f]+/docs/([^)\" ]+)#\1#g" \
     README.md > docs/index.md
 
@@ -59,9 +78,10 @@ shopt -s nullglob
 for file in docs/*.md; do
     [[ "${file}" == "docs/index.md" ]] && continue
     sed -i -E \
-        -e "s#\]\(\.\./(APIs|examples)/([^)]+)\)#](${DOCS_URL}/\1/\2)#g" \
-        -e "s#\]\(\.\./(APIs|examples)/\)#](${DOCS_URL}/\1/)#g" \
+        -e 's#\]\(\.\./APIs/#](__DOCS_ASSET__/APIs/#g' \
+        -e 's#\]\(\.\./examples/#](__DOCS_ASSET__/examples/#g' \
         -e "s#\]\(\.\./([^)]+)\)#](${REPO_URL}/\1)#g" \
+        -e 's#\]\(__DOCS_ASSET__/(APIs|examples)/#](../\1/#g' \
         -e "/^\{:\.no_toc\}/,/^[[:space:]]*\{:toc\}/d" \
         "${file}"
 done
