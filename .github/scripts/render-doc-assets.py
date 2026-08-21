@@ -8,6 +8,7 @@ all index pages by discovery rather than maintaining lists in configuration.
 
 from __future__ import annotations
 
+import html
 import json
 import os
 import shutil
@@ -31,8 +32,113 @@ def write(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
-def json_fence(value: Any) -> str:
-    return "```json\n" + json.dumps(value, indent=2) + "\n```\n"
+def json_scalar(value: Any) -> str:
+    if isinstance(value, str):
+        rendered = json.dumps(value, ensure_ascii=False)
+        return f'<span class="json-string">{html.escape(rendered)}</span>'
+    if value is True or value is False:
+        return f'<span class="json-boolean">{str(value).lower()}</span>'
+    if value is None:
+        return '<span class="json-null">null</span>'
+    return f'<span class="json-number">{html.escape(json.dumps(value))}</span>'
+
+
+def json_label(label: str | None) -> str:
+    if label is None:
+        return ""
+    return f'<span class="json-key">{html.escape(json.dumps(label))}</span>: '
+
+
+def json_tree(
+    value: Any,
+    label: str | None = None,
+    root: bool = False,
+    trailing_comma: bool = False,
+) -> str:
+    """Render JSON as a pretty, nested, collapsible HTML tree."""
+    comma = '<span class="json-comma">,</span>' if trailing_comma else ''
+    if not isinstance(value, (dict, list)):
+        return f'<div class="json-line">{json_label(label)}{json_scalar(value)}{comma}</div>'
+
+    is_array = isinstance(value, list)
+    opening = "[" if is_array else "{"
+    closing = "]" if is_array else "}"
+    summary = f"{json_label(label)}{opening} <span class=\"json-fold\">…</span> {closing}"
+    lines = [
+        f'<details class="json-node"{" open" if root else ""}>',
+        f"  <summary>{summary}</summary>",
+        '  <div class="json-children">',
+    ]
+    items = list(enumerate(value)) if is_array else list(value.items())
+    for index, (key, child) in enumerate(items):
+        child_label = None if is_array else str(key)
+        rendered = json_tree(
+            child,
+            child_label,
+            False,
+            trailing_comma=index < len(items) - 1,
+        )
+        lines.append("    " + rendered.replace("\n", "\n    "))
+    closing_comma = '<span class="json-comma">,</span>' if trailing_comma else ''
+    lines.extend([
+        "  </div>",
+        f'  <div class="json-close">{closing}{closing_comma}</div>',
+        "</details>",
+    ])
+    return "\n".join(lines)
+
+
+def render_json(value: Any) -> str:
+    return '<div class="json-viewer">\n' + json_tree(value, root=True) + "\n</div>\n"
+
+
+def render_json_css() -> str:
+    return """.json-viewer {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  border-radius: 0.2rem;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+  font-family: var(--md-code-font-family, monospace);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.json-node > summary {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.json-node[open] > summary .json-fold {
+  display: none;
+}
+
+.headerlink {
+  display: none !important;
+}
+
+.json-node > summary:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.json-children {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.json-line,
+.json-close {
+  white-space: pre-wrap;
+}
+
+.json-key { color: var(--md-code-hl-function-color); }
+.json-string { color: var(--md-code-hl-string-color); }
+.json-number { color: var(--md-code-hl-number-color); }
+.json-boolean, .json-null { color: var(--md-code-hl-constant-color); }
+.json-fold, .json-comma { opacity: 0.65; }
+"""
 
 
 def load_json(path: Path) -> Any:
@@ -88,8 +194,8 @@ def render_schemas() -> None:
         resolved_json.write_text(json.dumps(resolved_value, indent=2) + "\n", encoding="utf-8")
         raw_link = Path(os.path.relpath(raw_json, raw_md.parent)).as_posix()
         resolved_link = Path(os.path.relpath(resolved_json, raw_md.parent)).as_posix()
-        raw_tab = textwrap.indent(json_fence(raw_value).rstrip(), "    ")
-        resolved_tab = textwrap.indent(json_fence(resolved_value).rstrip(), "    ")
+        raw_tab = textwrap.indent(render_json(raw_value).rstrip(), "    ")
+        resolved_tab = textwrap.indent(render_json(resolved_value).rstrip(), "    ")
         write(
             raw_md,
             f"# {relative.stem}\n\n"
@@ -123,7 +229,7 @@ def render_examples() -> None:
             output_md,
             f"# Example: {relative.name}\n\n"
             f"[Raw file]({relative.name})\n\n"
-            + json_fence(load_json(example_path)),
+            + render_json(load_json(example_path)),
         )
 
     lines = ["# Examples", ""]
@@ -171,6 +277,7 @@ def main() -> None:
     render_apis()
     render_schemas()
     render_examples()
+    write(DOCS / "stylesheets" / "extra.css", render_json_css())
 
 
 if __name__ == "__main__":
