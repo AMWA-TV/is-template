@@ -63,7 +63,11 @@ def json_tree(
     is_array = isinstance(value, list)
     opening = "[" if is_array else "{"
     closing = "]" if is_array else "}"
-    summary = f"{json_label(label)}{opening} <span class=\"json-fold\">…</span> {closing}"
+    summary = (
+        f'{json_label(label)}{opening} '
+        f'<span class="json-fold">…</span> '
+        f'<span class="json-collapsed-close">{closing}{comma}</span>'
+    )
     lines = [
         f'<details class="json-node"{" open" if root else ""}>',
         f"  <summary>{summary}</summary>",
@@ -89,7 +93,30 @@ def json_tree(
 
 
 def render_json(value: Any) -> str:
-    return '<div class="json-viewer">\n' + json_tree(value, root=True) + "\n</div>\n"
+    return (
+        '<div class="json-viewer">\n'
+        '  <div class="json-controls" role="group" aria-label="JSON folding controls">\n'
+        '    <button type="button" class="json-control" data-json-action="expand">Expand all</button>\n'
+        '    <button type="button" class="json-control" data-json-action="collapse">Collapse all</button>\n'
+        '  </div>\n'
+        + json_tree(value, root=True)
+        + "\n</div>\n"
+    )
+
+
+def render_json_js() -> str:
+    return """document.addEventListener("click", (event) => {
+  if (!(event.target instanceof Element)) return;
+  const button = event.target.closest("[data-json-action]");
+  if (!(button instanceof HTMLButtonElement)) return;
+  const viewer = button.closest(".json-viewer");
+  if (!viewer) return;
+  const expanded = button.dataset.jsonAction === "expand";
+  viewer.querySelectorAll("details.json-node").forEach((node) => {
+    node.open = expanded;
+  });
+});
+"""
 
 
 def render_json_css() -> str:
@@ -105,6 +132,27 @@ def render_json_css() -> str:
   line-height: 1.5;
 }
 
+.json-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.json-control {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  color: var(--md-default-fg-color);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.2rem 0.5rem;
+}
+
+.json-control:hover {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+
 .json-node > summary {
   cursor: pointer;
   padding-left: 0 !important;
@@ -115,8 +163,13 @@ def render_json_css() -> str:
   display: none !important;
 }
 
-.json-node[open] > summary > .json-fold {
+.json-node[open] > summary > .json-fold,
+.json-node[open] > summary > .json-collapsed-close {
   display: none !important;
+}
+
+.json-node:not([open]) > summary > .json-collapsed-close {
+  display: inline !important;
 }
 
 .headerlink {
@@ -283,6 +336,7 @@ def main() -> None:
     render_schemas()
     render_examples()
     write(DOCS / "stylesheets" / "extra.css", render_json_css())
+    write(DOCS / "javascripts" / "json-viewer.js", render_json_js())
 
 
 if __name__ == "__main__":
