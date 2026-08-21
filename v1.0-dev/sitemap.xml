@@ -28,18 +28,6 @@
         <loc>https://specs.amwa.tv/is-template/v1.0-dev/APIs/schemas/id-uuid/</loc>
       </url>
       <url>
-        <loc>https://specs.amwa.tv/is-template/v1.0-dev/APIs/schemas/resolved/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/is-template/v1.0-dev/APIs/schemas/resolved/error/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/is-template/v1.0-dev/APIs/schemas/resolved/exampleapi-base/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/is-template/v1.0-dev/APIs/schemas/resolved/id-uuid/</loc>
-      </url>
-      <url>
         <loc>https://specs.amwa.tv/is-template/v1.0-dev/examples/</loc>
       </url>
       <url>
