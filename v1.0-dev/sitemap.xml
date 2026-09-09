@@ -16,16 +16,7 @@
         <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/</loc>
       </url>
       <url>
-        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/schemas/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/schemas/error/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/schemas/exampleapi-base/</loc>
-      </url>
-      <url>
-        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/schemas/id-uuid/</loc>
+        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/APIs/TemplateAPI/</loc>
       </url>
       <url>
         <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/examples/</loc>
@@ -35,5 +26,17 @@
       </url>
       <url>
         <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/images/</loc>
+      </url>
+      <url>
+        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/schemas/</loc>
+      </url>
+      <url>
+        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/schemas/error/</loc>
+      </url>
+      <url>
+        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/schemas/exampleapi-base/</loc>
+      </url>
+      <url>
+        <loc>https://specs.amwa.tv/new/is-template/v1.0-dev/schemas/id-uuid/</loc>
       </url>
 </urlset>
