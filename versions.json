@@ -1,5 +1,10 @@
 [
   {
+    "version": "publish-docker-test",
+    "title": "publish-docker-test",
+    "aliases": []
+  },
+  {
     "version": "v1.0-dev",
     "title": "v1.0-dev",
     "aliases": [
