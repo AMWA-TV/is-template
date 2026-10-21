@@ -1,5 +1,10 @@
 [
   {
+    "version": "publish-slack-webhook-test",
+    "title": "publish-slack-webhook-test",
+    "aliases": []
+  },
+  {
     "version": "publish-docker-test",
     "title": "publish-docker-test",
     "aliases": []
