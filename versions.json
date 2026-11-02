@@ -1,5 +1,10 @@
 [
   {
+    "version": "test-ubuntu-26",
+    "title": "test-ubuntu-26",
+    "aliases": []
+  },
+  {
     "version": "publish-slack-webhook-test",
     "title": "publish-slack-webhook-test",
     "aliases": []
