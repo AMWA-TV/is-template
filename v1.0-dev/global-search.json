@@ -3,12 +3,6 @@
   "repository": "AMWA-TV/is-template",
   "documents": [
     {
-      "title": "Page not found",
-      "url": "https://specs.amwa.tv/is-template/latest/404/",
-      "text": "Page not found Page not found Page not found - [Work In Progress] Template for AMWA NMOS Interface Specifications Skip to content Page not found The page you requested could not be found. Return to the documentation home",
-      "repository": "AMWA-TV/is-template"
-    },
-    {
       "title": "TemplateAPI",
       "url": "https://specs.amwa.tv/is-template/latest/APIs/TemplateAPI/",
       "text": "TemplateAPI TemplateAPI TemplateAPI - [Work In Progress] Template for AMWA NMOS Interface Specifications Skip to content TemplateAPI This is an example API so the template works Open TemplateAPI API documentation",
